@@ -1,36 +1,8 @@
-  # Initialize deck of cards
-     # Deal two random cards each to player(s) and dealer 
-     # Remove the dealt cards from the deck as they are dealt
-       # Player 'Hits' or 'Stays' or has BJ
-         # if player has BJ play moves to Dealer
-         # if player hits then another card is dealt
-         # if total exceeds 21 player busts comp wins, else if player has > 16 && < 20 player can 'Hit' or 'Stay', else 'Hit' 
-         # Remove dealt cards from deck array
-         # continue until 'Stay' or 'Bust'
-          # Dealer plays if Player 'Stayed' or has BJ
-            # if dealer cards == BJ && players cards == BJ its a draw
-            # else if dealers cards < 16 dealer 'Hits'
-            # else if dealers cards > 16 && < 19 random ('Hit' or 'Stay')
-            # else if dealers cards >= 19 && <= 21 'Stay'
-            # else bust 
-              # Result compares 
-                # play again?
-  
-  # 2...9 = face value , 10,J,Q,K = 10, A = 1 or 11
-  # 4 different suits
-  # 52 cards in total
-  
-  
-  
   require('pry')
   
-  #  M   M  MMMM  MMMMM  M   M  MMMMM  MMMM   MMMMM
-  #  MM MM  M       M    M   M  M   M  M   M  M
-  #  M M M  MMM     M    MMMMM  M   M  M   M   MMM 
-  #  M   M  M       M    M   M  M   M  M   M      M
-  #  M   M  MMMM    M    M   M  MMMMM  MMMM   MMMMM
+  #  METHODS
   
-  # deals cards
+  # Deal two cards to player and dealer
   def deal(player, dealer, decks)
     system 'clear'
     2.times do
@@ -40,10 +12,10 @@
     display_cards(player)
   end
   
-  # displays the cards and tell player their score 
+  # Show player cards and calculate current total
   def display_cards(hands)
     i = 0
-    puts 'PLAYERS CARDS'
+    puts 'YOUR HAND:'
     hands.each do |card|
       puts " _____ "
       puts "|     |"
@@ -54,14 +26,14 @@
     end
   end
   
-  # Dealer shows hand
+  # Show dealer's hand
   def dealer_shows(dealers_hand, players_hand, running_total1, running_total2)
     system 'clear'
     player_final_score(running_total1, running_total2)
     display_cards(players_hand)
     puts 
     puts
-    puts "DEALERS CARDS"
+    puts "DEALER'S HAND:"
     i = 0
     dealers_hand.each do |card|
       puts " _____ "
@@ -81,7 +53,7 @@
     end
   end
   
-  # say score
+  # Show game score
   def say_score(hands, person)
     total1 = calculate_total(hands)[:total1]
     total2 = calculate_total(hands)[:total2]
@@ -96,7 +68,7 @@
     end
   end
   
-  # calc total
+  # calculate totals
  def calculate_total(array)
    running_totals = {:total1 => 0, :total2 => 0}
    ace_in_pack = false
@@ -126,10 +98,11 @@
  def player_hit_or_stay(running_total1, running_total2, decks, player, dealer)
    say_score(player, "Player")
    if running_total1 > 21 && running_total2 > 21 
-     puts "YOU BUST!"
-     puts "Dealer wins"
+     puts ">__< You Busted! >__<"
+     sleep 1
+     puts "Dealer wins."
      sleep 1.5
-     puts "GAME OVER :("
+     puts "Better luck next time!"
    elsif running_total1 == 21 || running_total2 == 21 
      puts "That's Blackjack!"
      running_total1 = calculate_total(player)[:total1]
@@ -142,7 +115,7 @@
      sleep 1
      result(player_score, dealer_score)
    elsif running_total1 <= 20 || running_total2 <= 20
-     puts 'Hit(h) or Stay(s)?'
+     puts 'Would you like to (h)it or (s)tay?'
      answer = gets.chomp.downcase
      while answer != 'h' && answer != 's'
        puts 'Press "h" to hit or press "s" to stay'
@@ -173,8 +146,8 @@
  # dealer hit or stay
  def dealer_hit_or_stay(decks, running_total1,running_total2, player, dealer, player_score)
    if running_total1 > 21 && running_total2 > 21 
-     puts "The dealer's busted, you win!"
-     sleep 0.5
+     puts "The dealer's busted! You win!"
+     sleep 1
      puts "♣ ♥ ♠ ♦ Thank you for playing! ♣ ♥ ♠ ♦"
    elsif running_total1 == 21 || running_total2 == 21
      puts 'The dealer hit Blackjack!'
@@ -195,7 +168,7 @@
    elsif running_total1 >= 17 && running_total1 <= 18
      gamble = ['yes', 'no']
      if gamble.sample == 'yes'
-       puts 'Dealer Hits'
+       puts 'Dealer hits...'
        hit(decks, dealer)
        sleep 2
        dealer_shows(dealer, player, running_total1, running_total2)
@@ -203,7 +176,7 @@
        running_total2 = calculate_total(dealer)[:total2] 
        dealer_hit_or_stay(decks, running_total1,running_total2, player, dealer, player_score)
      elsif gamble.sample == 'no'
-       puts 'Dealer Stays'
+       puts 'Dealer stays!'
        sleep 2
        running_total1 = calculate_total(dealer)[:total1]
        running_total2 = calculate_total(dealer)[:total2] 
@@ -230,31 +203,30 @@
  def result(player_score, dealer_score)
    if player_score == dealer_score
      puts "Both players scored #{player_score}"
-     puts "It's a DRAW!"
+     sleep 1
+     puts "IT'S A DRAW!"
    elsif player_score > dealer_score
      puts "#{player_score} beats #{dealer_score}"    
      puts "♣ ♥ ♠ ♦ You Win! ♣ ♥ ♠ ♦"
    elsif dealer_score > player_score
      puts "#{dealer_score} beats #{player_score}"
-     puts ">_< Dealer wins. Better luck next time! >_<"
+     puts ">_< Dealer wins. >_<"
+     sleep 1
+     puts " Better luck next time!"
    end
  end
  
  
- #  GGGGG  GGGGG  G   G  GGGGG
- #  G      G   G  GG GG  G
- #  G  GG  GGGGG  G G G  GGG
- #  G   G  G   G  G   G  G
- #  GGGGG  G   G  G   G  GGGGG
+ #  GAME LOGIC
  
- 
- # play again 
+ # Game repeat and scoreboard 
  play_again = 'y'
  game_streak = 0
  results = { :wins => 0, :losses => 0, :draws => 0 } # store history
  
  
  while play_again == 'y'
+
    # initialize decks
    decks = ['Ah ', '2h ', '3h ', '4h ', '5h ', '6h ', '7h ', '8h ', '9h ', '10h', 'Jh ', 'Qh ', 'Kh ','Ad ', '2d ', '3d ', '4d ', '5d ', '6d ', '7d ', '8d ', '9d ', '10d', 'Jd ', 'Qd ', 'Kd ', 'As ', '2s ', '3s ', '4s ', '5s ', '6s ', '7s ', '8s ', '9s ', '10s', 'Js ', 'Qs ', 'Ks ', 'Ac ', '2c ', '3c ', '4c ', '5c ', '6c ', '7c ', '8c ', '9c ', '10c', 'Jc ', 'Qc ', 'Kc ', 'Ah ', '2h ', '3h ', '4h ', '5h ', '6h ', '7h ', '8h ', '9h ', '10h', 'Jh ', 'Qh ', 'Kh ','Ad ', '2d ', '3d ', '4d ', '5d ', '6d ', '7d ', '8d ', '9d ', '10d', 'Jd ', 'Qd ', 'Kd ', 'As ', '2s ', '3s ', '4s ', '5s ', '6s ', '7s ', '8s ', '9s ', '10s', 'Js ', 'Qs ', 'Ks ', 'Ac ', '2c ', '3c ', '4c ', '5c ', '6c ', '7c ', '8c ', '9c ', '10c', 'Jc ', 'Qc ', 'Kc ']
    
@@ -296,8 +268,8 @@
    puts "♣ ♥ ♠ ♦ ♣ ♥ ♠ ♦ ♣ ♥ ♠ ♦ ♣ ♥ ♠ ♦ ♣ ♥ ♠ ♦"
    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
    puts "Current game streak is #{game_streak}"
-   puts "You have won #{results[:wins]}, lost #{results[:losses]} and drawn #{results[:draws]}"
-   puts "You have won #{per_wins}% of the games you have played"
+   puts "You've won #{results[:wins]}, lost #{results[:losses]}, and drawn #{results[:draws]} games"
+   puts "You've won #{per_wins}% of your total games played"
    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
    puts "♣ ♥ ♠ ♦ ♣ ♥ ♠ ♦ ♣ ♥ ♠ ♦ ♣ ♥ ♠ ♦ ♣ ♥ ♠ ♦"
  
